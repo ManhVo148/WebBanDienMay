@@ -1,0 +1,114 @@
+﻿@model PagedList.IPagedList<DoAnCoSo.Models.Orders>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "ManagerOrder";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+
+
+<div class="order">
+        <div class="admin_sort_product">
+            <p>Sắp xếp:</p>
+            <div class="admin_price_sort">
+                <p>Theo ngày</p>
+                <div class="admin_sort_droplist">
+                    @Html.ActionLink("Ngày gần đây", "ManagerOrder", new { sortday = ViewBag.AdminDayAsc, currentFilter = ViewBag.CurrentFilter })
+                    @Html.ActionLink("Ngày xa nhất", "ManagerOrder", new { sortday = ViewBag.AdminDayDes, currentFilter = ViewBag.CurrentFilter })
+                </div>
+            </div>
+        </div>
+
+</div>
+    <div class="search_po1">
+            @using (Html.BeginForm("ManagerOrder", "Manager", FormMethod.Get))
+            {
+                @Html.TextBox("searchString", null, new { placeholder = "Tìm kiếm tên người đặt" })
+                <input type="submit" value="Tìm kiếm" placeholder="Search" class="search" />
+            }
+        </div>
+
+    <table class="table">
+        <tr>
+            <th>
+                <p>Tên</p>
+            </th>
+            <th>
+                <p>Email</p>
+            </th>
+            <th>
+                <p>SDT</p>
+            </th>
+            <th>
+                <p>Địa chỉ</p>
+            </th>
+            <th>
+                <p>Lưu ý</p>
+            </th>
+            <th>
+                <p>Ngày đặt</p>
+            </th>
+            <th>
+                <p>Thanh toán</p>
+            </th>
+            <th>
+                <p>Hoàn thành</p>
+            </th>
+            <th>
+                <p>Tổng tiền</p>
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.phone_number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.note)
+                </td>
+                <td style="width: 85px; overflow: hidden; text-overflow: ellipsis; line-height: 20px; -webkit-line-clamp: 3; height: 60px; display: -webkit-box; -webkit-box-orient: vertical;">
+
+                    @Html.DisplayFor(modelItem => item.order_date)
+                </td>
+                <td>
+                    @item.isPaid
+                </td>
+                <td>
+                    @item.isComplete
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FormattedTongtien)
+                </td>
+                <td>
+                    <div class="edit_product">
+                        <a href="/Admin/Manager/CheckOrder/@item.id">Kiểm Tra</a>
+                    </div>
+                    <div class="edit_product">
+                        <a href="/Admin/Manager/DetailOrder/@item.id">Xem đơn</a>
+                    </div>
+                    <div class="del_product">
+                        <a href="/Admin/Manager/Delete/@item.id">Xoá</a>
+                    </div>
+                    @*@Html.ActionLink("Kiểm Tra", "CheckOrder", new { id = item.id }) |
+            @Html.ActionLink("Xem đơn", "DetailOrder", new { id = item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.id })*@
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+    @Html.PagedListPager(Model, page => Url.Action("ManagerOrder", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
